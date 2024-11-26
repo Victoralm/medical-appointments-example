@@ -1,0 +1,6 @@
+@Victoralm.MAE.API_HostAddress = http://localhost:5198
+
+GET {{Victoralm.MAE.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

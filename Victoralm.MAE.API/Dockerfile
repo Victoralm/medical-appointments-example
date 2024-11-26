@@ -17,6 +17,8 @@ RUN dotnet restore "./Victoralm.MAE.API.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "./Victoralm.MAE.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# RUN dotnet ef migrations add InitialCreate
+# RUN dotnet ef database update
 
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish

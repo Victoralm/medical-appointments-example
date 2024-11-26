@@ -1,3 +1,4 @@
 /**/.vs
 /**/bin
 /**/obj
+/Victoralm.MAE.API/docker/postgres-data

@@ -6,10 +6,23 @@ services:
         container_name: medical-appointment-example-api
         build:
             context: ../
-            dockerfile: Dockerfile
+            dockerfile: ./Dockerfile
         ports:
             - "32790:8080"
             - "32791:8081"
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=http://*:8080;http://*:8081
+
+    mae-postgre:
+        image: postgres:latest
+        container_name: mae-postgre-sql
+        build:
+            context: ../postgre
+            dockerfile: ./Dockerfile
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_PASSWORD: "A_Strong_Pass_@!"
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data

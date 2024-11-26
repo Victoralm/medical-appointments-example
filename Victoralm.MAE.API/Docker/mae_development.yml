@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+    mae-api:
+        image: victoralm/medical-appointment-example-api:latest
+        container_name: medical-appointment-example-api
+        build:
+            context: ../
+            dockerfile: Dockerfile
+        ports:
+            - "32790:8080"
+            - "32791:8081"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://*:8080;http://*:8081

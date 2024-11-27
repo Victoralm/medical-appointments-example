@@ -18,10 +18,12 @@ public class Medic
     public string Email { get; set; }
 
     [Required]
+    //[UseSorting]
     [ForeignKey(nameof(MedicalSpecialty))]
     public List<Guid> MedicalSpecialtyId { get; set; }
 
     [JsonIgnore]
+    //[UseSorting]
     public List<Appointment> Appointments { get; } = new();
 
 }

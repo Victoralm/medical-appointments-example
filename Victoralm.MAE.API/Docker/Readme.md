@@ -1,6 +1,6 @@
 # Docker
 
-## IPCAs
+## Notes
 
 -   Lembrar que o Dockerfile só enxerga arquivos e pastas da raiz onde está contido em diante. Arquivos e pastas acima da raiz não poderão ser acessados. Esse é o principal motivo para utilizar-se um DockerCompose.
 -   Build do container baseado no Dockerfile: No terminal, já na pasta onde o Dockerfile está contido (raiz):

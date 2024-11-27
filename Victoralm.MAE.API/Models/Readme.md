@@ -91,7 +91,7 @@ public IQueryable<Patient> GetPatients([Service] PostgreContext context) => cont
 
     ```gql
       {
-          // Ordereb by name and getting 2 records
+          // Ordered by name and getting 2 records
           // (I just have 5 records by the time I was running the code 😜)
           patients( order: [ { name: ASC }] first: 2) {
               edges {

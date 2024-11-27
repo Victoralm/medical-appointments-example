@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using System.Data;
 using Victoralm.MAE.API.Models;
 
 namespace Victoralm.MAE.API.Context;
@@ -23,7 +21,6 @@ public class PostgreContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //Configure default schema
-        //modelBuilder.HasDefaultSchema("dev");
         modelBuilder.HasDefaultSchema(Configuration.GetSection("envVariables:env").Value);
         base.OnModelCreating(modelBuilder);
     }

@@ -24,6 +24,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public virtual async Task<bool> Add(T entity)
     {
         await _dbSet.AddAsync(entity);
+        
         return true;
     }
 

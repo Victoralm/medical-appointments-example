@@ -1,6 +1,7 @@
 ﻿using Victoralm.MAE.API.Context;
+using Victoralm.MAE.API.Models;
 
-namespace Victoralm.MAE.API.Models;
+namespace Victoralm.MAE.API.GraphQL.Queries;
 
 public class Query
 {

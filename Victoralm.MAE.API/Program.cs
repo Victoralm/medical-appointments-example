@@ -1,5 +1,6 @@
 using Victoralm.MAE.API.Context;
-using Victoralm.MAE.API.Models;
+using Victoralm.MAE.API.GraphQL.Mutations;
+using Victoralm.MAE.API.GraphQL.Queries;
 using Victoralm.MAE.API.UoW.Implementations;
 using Victoralm.MAE.API.UoW.Interfaces;
 
@@ -21,10 +22,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<PostgreContext>();
+builder.Services.AddDbContext<PostgreContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddGraphQLServer().AddQueryType<Query>()
+                                   .AddMutationType<Mutation>()
+                                   .RegisterDbContext<PostgreContext>()
                                    .AddProjections()
                                    .AddFiltering()
                                    .AddSorting();

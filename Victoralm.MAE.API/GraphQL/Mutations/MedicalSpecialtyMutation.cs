@@ -27,4 +27,40 @@ public partial class Mutation
 
         return medicalSpecialtyResult;
     }
+
+    public async Task<MedicalSpecialtyResult> UpdateMedicalSpecialtyt([Service] IUnitOfWork unitOfWork, Guid id, MedicalSpecialtyInput medicalSpecialtyInput)
+    {
+        MedicalSpecialty medicalSpecialty = await unitOfWork.MedicalSpecialities.GetById(id);
+
+        if (medicalSpecialty == null) throw new GraphQLException(new Error("Medical Specialty not found", "MEDICALSPECIALTY_NOT_FOUND"));
+
+        medicalSpecialty.Name = medicalSpecialtyInput.Name;
+
+        await unitOfWork.MedicalSpecialities.Upsert(medicalSpecialty);
+
+        MedicalSpecialtyResult medicalSpecialtyResult = new MedicalSpecialtyResult()
+        {
+            Id = medicalSpecialty.Id,
+            Name = medicalSpecialty.Name
+        };
+
+        return medicalSpecialtyResult;
+    }
+
+    public async Task<MedicalSpecialtyResult> DeleteMedicalSpecialty([Service] IUnitOfWork unitOfWork, Guid id)
+    {
+        MedicalSpecialty medicalSpecialty = await unitOfWork.MedicalSpecialities.GetById(id);
+
+        if (medicalSpecialty == null) throw new GraphQLException(new Error("Medical Specialty not found", "MEDICALSPECIALTY_NOT_FOUND"));
+
+        MedicalSpecialtyResult medicalSpecialtyResult = new MedicalSpecialtyResult()
+        {
+            Id = medicalSpecialty.Id,
+            Name = medicalSpecialty.Name
+        };
+
+        await unitOfWork.MedicalSpecialities.Delete(id);
+
+        return medicalSpecialtyResult;
+    }
 }

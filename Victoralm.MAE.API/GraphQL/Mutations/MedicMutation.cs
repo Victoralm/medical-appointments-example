@@ -33,4 +33,52 @@ public partial class Mutation
 
         return medicResult;
     }
+
+    public async Task<MedicResult> UpdateAppointment([Service] IUnitOfWork unitOfWork, Guid id, MedicInput medicInput)
+    {
+        Medic medic = await unitOfWork.Medics.GetById(id);
+
+        if (medic == null) throw new GraphQLException(new Error("Medic not found", "MEDIC_NOT_FOUND"));
+
+        medic.Name = medicInput.Name;
+        medic.Address = medicInput.Address;
+        medic.Phone = medicInput.Phone;
+        medic.Email = medicInput.Email;
+        medic.MedicalSpecialtyId = medicInput.MedicalSpecialtyId;
+
+        await unitOfWork.Medics.Upsert(medic);
+
+        MedicResult medicResult = new MedicResult()
+        {
+            Id = medic.Id,
+            Name = medic.Name,
+            Address = medic.Address,
+            Phone = medic.Phone,
+            Email = medic.Email,
+            MedicalSpecialtyId = medic.MedicalSpecialtyId
+        };
+
+        return medicResult;
+    }
+
+    public async Task<MedicResult> DeleteMedic([Service] IUnitOfWork unitOfWork, Guid id)
+    {
+        Medic medic = await unitOfWork.Medics.GetById(id);
+
+        if (medic == null) throw new GraphQLException(new Error("Medic not found", "MEDIC_NOT_FOUND"));
+
+        MedicResult medicResult = new MedicResult()
+        {
+            Id = medic.Id,
+            Name = medic.Name,
+            Address = medic.Address,
+            Phone = medic.Phone,
+            Email = medic.Email,
+            MedicalSpecialtyId = medic.MedicalSpecialtyId
+        };
+
+        await unitOfWork.MedicalSpecialities.Delete(id);
+
+        return medicResult;
+    }
 }

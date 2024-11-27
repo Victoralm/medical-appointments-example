@@ -4,11 +4,15 @@ namespace Victoralm.MAE.API.Models;
 
 public class Query
 {
-    //[UsePaging]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Medic> GetMedics([Service] PostgreContext context) => context.Medics;
+
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<Patient> GetPatients([Service] PostgreContext context) => context.Patients;
 
     public string Teste => "Só um texto de teste";
 }

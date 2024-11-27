@@ -5,5 +5,4 @@ namespace Victoralm.MAE.API.Repositories.Interfaces;
 public interface IMedicalSpecialityRepository : IGenericRepository<MedicalSpecialty>
 {
     Task<IEnumerable<MedicalSpecialty>> GetMedicalSpecialtiesAsync();
-    //Task<MedicalSpecialty?> GetCategoryByIdAsync(Guid Id);
 }

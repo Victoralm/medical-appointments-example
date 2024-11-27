@@ -2,25 +2,25 @@
 
 ## Notes
 
--   Lembrar que o Dockerfile só enxerga arquivos e pastas da raiz onde está contido em diante. Arquivos e pastas acima da raiz não poderão ser acessados. Esse é o principal motivo para utilizar-se um DockerCompose.
--   Build do container baseado no Dockerfile: No terminal, já na pasta onde o Dockerfile está contido (raiz):
+-   Remember that the Dockerfile only has access to files and folders within its root directory and below. Files and folders above the root cannot be accessed. This is the main reason for using Docker Compose.
+-   Building the container based on the Dockerfile: In the terminal, within the folder where the Dockerfile is located (root):
     ```bash
     docker build .
     ```
 
 ## DockerCompose
 
--   Executar o arquivo dockercompose - notar o `-f` que permite especificar o nome do arquivo:
+-   Run the Docker Compose file - note the `-f` flag, which allows you to specify the file name:
 
     ```bash
     docker-compose -f <nome_do_arquivo> up
-    # Como em:
+    # Like in:
     docker-compose -f mae_development.yml up
-    # Para fazer rebuild a cada alteração no código (Reverificar)
+    # To rebuild at code change (Recheck)
     docker-compose -f mae_development.yml up -w
-    # Para forçar um novo build
+    # Forcing a new build
     docker-compose -f mae_development.yml up --build
     ```
 
 -   Swagger urls:
-    -   Para o exemplo em questão: http://localhost:32790/swagger/index.html, https://localhost:32791/swagger/index.html
+    -   For the current example: http://localhost:32790/swagger/index.html, https://localhost:32791/swagger/index.html

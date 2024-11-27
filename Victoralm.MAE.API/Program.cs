@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Victoralm.MAE.API.Context;
 using Victoralm.MAE.API.Models;
 using Victoralm.MAE.API.UoW.Implementations;
@@ -26,19 +25,11 @@ builder.Services.AddDbContext<PostgreContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddGraphQLServer().AddQueryType<Query>()
-                                   //.RegisterDbContextFactory<PostgreContext>()
                                    .AddProjections()
                                    .AddFiltering()
                                    .AddSorting();
 
 var app = builder.Build();
-
-// Automating Migrations
-//var scope = app.Services.CreateScope();
-//var context = scope.ServiceProvider.GetRequiredService<PostgreContext>();
-//context.Database.Migrate();
-//if (context.Database.GetPendingMigrations().Any())
-//    context.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

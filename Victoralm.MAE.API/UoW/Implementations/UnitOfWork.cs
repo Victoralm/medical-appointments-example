@@ -1,5 +1,4 @@
 ﻿using Victoralm.MAE.API.Context;
-using Victoralm.MAE.API.Models;
 using Victoralm.MAE.API.Repositories.Implementations;
 using Victoralm.MAE.API.UoW.Interfaces;
 

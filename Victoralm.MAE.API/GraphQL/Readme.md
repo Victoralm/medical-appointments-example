@@ -301,3 +301,27 @@ builder.Services.AddGraphQLServer().AddQueryType<Query>()
 ```
 
 </details>
+
+## Mutation Examples
+
+> I'm using a partial class, **Mutation.cs**, to separate the responsabilities for each entity.
+
+> Also, I'm still using the UoW to persist the data.
+
+### Adding a record
+
+<details>
+    <summary>Collapse</summary>
+
+-   Adding a new patient (see **PatientMutation.cs**):
+
+    ```gql
+    mutation {
+        addPatient(patientInput: { name: "Mason Ethan Fisher", address: "492 Birch Court, Bluewater, FL 56849", phone: "(208) 555-4851", email: "m.ethanF.FL@fakemail.com" }) {
+            id
+            name
+        }
+    }
+    ```
+
+    </details>

@@ -9,6 +9,7 @@ public class Query
     [UseSorting]
     public IQueryable<Medic> GetMedics([Service] PostgreContext context) => context.Medics;
 
+    [UsePaging]
     [UseProjection]
     [UseFiltering]
     [UseSorting]

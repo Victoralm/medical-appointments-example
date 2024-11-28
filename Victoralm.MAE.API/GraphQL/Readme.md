@@ -296,9 +296,7 @@ public IQueryable<Patient> GetPatients([Service] PostgreContext context) => cont
 
 > I'm using a partial class, **Subscription.cs**, to separate the responsabilities for each entity.
 
-### Subscription
-
-#### MedicAdded event
+### MedicAdded event
 
 <details>
     <summary>Collapse</summary>
@@ -370,7 +368,7 @@ public async Task<MedicResult> AddMedic(..., [Service] ITopicEventSender topicEv
 
 </details>
 
-#### MedicUpdated event
+### MedicUpdated event
 
 <details>
     <summary>Collapse</summary>

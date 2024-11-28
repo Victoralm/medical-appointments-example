@@ -278,7 +278,178 @@ public IQueryable<Patient> GetPatients([Service] PostgreContext context) => cont
     }
     ```
 
+-   Adding a new Medic:
+
+    ```gql
+    mutation {
+        addMedic(medicInput: { name: "Harper Charlotte Brooks", address: "567 Willow Boulevard, Rosewood, GA 38374", email: "h.charlotte.brooks@fakemail.com", phone: "(256) 555-8429", medicalSpecialtyId: ["bc8d034d-7cdc-49d8-8bbb-09fbcb138c2f", "0e2e04b1-0fea-41f1-8515-7743401ca91f"] }) {
+            id
+            name
+            address
+        }
+    }
+    ```
+
     </details>
+
+## Events Subscription
+
+> I'm using a partial class, **Subscription.cs**, to separate the responsabilities for each entity.
+
+### Subscription
+
+#### MedicAdded event
+
+<details>
+    <summary>Collapse</summary>
+
+The goal of the event is receive and return a `MedicResult` when a new one is created.
+
+The event was created on the Subscription class, **MedicSubscription.cs** file:
+
+```csharp
+[Subscribe]
+public MedicResult MedicAdded([EventMessage] MedicResult medic) => medic;
+```
+
+The event trigger was added on the Mutation class, **MedicMutation.cs** file, on the `AddMedic` method:
+
+```csharp
+public async Task<MedicResult> AddMedic(..., [Service] ITopicEventSender topicEventSender, ...)
+{
+    ...
+    // Triggering the event
+    await topicEventSender.SendAsync(nameof(Subscription.MedicAdded), medicResult);
+    ...
+}
+```
+
+-   Adding a new Medic:
+
+    ```gql
+    mutation {
+        addMedic(medicInput: { name: "Harper Charlotte Brooks", address: "567 Willow Boulevard, Rosewood, GA 38374", email: "h.charlotte.brooks@fakemail.com", phone: "(256) 555-8429", medicalSpecialtyId: ["bc8d034d-7cdc-49d8-8bbb-09fbcb138c2f", "0e2e04b1-0fea-41f1-8515-7743401ca91f"] }) {
+            id
+            name
+            address
+        }
+    }
+    ```
+
+-   Subscription to event example:
+
+    ```gql
+    subscription {
+        medicAdded {
+            id
+            name
+            address
+            phone
+            email
+            medicalSpecialtyId
+        }
+    }
+    ```
+
+-   Subscription response when a new Medic is created:
+
+    ```json
+    {
+        "data": {
+            "medicAdded": {
+                "id": "2458fc1a-590c-4e4f-a86b-6d78756bc2cc",
+                "name": "Harper Charlotte Brooks",
+                "address": "567 Willow Boulevard, Rosewood, GA 38374",
+                "phone": "(256) 555-8429",
+                "email": "h.charlotte.brooks@fakemail.com",
+                "medicalSpecialtyId": ["bc8d034d-7cdc-49d8-8bbb-09fbcb138c2f", "0e2e04b1-0fea-41f1-8515-7743401ca91f"]
+            }
+        }
+    }
+    ```
+
+</details>
+
+#### MedicUpdated event
+
+<details>
+    <summary>Collapse</summary>
+
+The goal of the event is watch the update of a specific Medic record by id.
+
+The event was created on the Subscription class, **MedicSubscription.cs** file:
+
+```csharp
+[SubscribeAndResolve]
+public ValueTask<ISourceStream<MedicResult>> MedicUpdated(Guid medicId, [Service] ITopicEventReceiver topicEventReceiver)
+{
+    string topicName = $"{medicId}_{nameof(Subscription.MedicUpdated)}";
+    return topicEventReceiver.SubscribeAsync<MedicResult>(topicName);
+}
+```
+
+The event trigger was added on the Mutation class, **MedicMutation.cs** file, on the `UpdateMedic` method:
+
+```csharp
+public async Task<MedicResult> UpdateMedic(..., [Service] ITopicEventSender topicEventSender, ...)
+{
+    ...
+    // Triggering the event
+    string updatedMedicTopic = $"{medicResult.Id}_{nameof(Subscription.MedicUpdated)}";
+    await topicEventSender.SendAsync(updatedMedicTopic, medicResult);
+    ...
+}
+```
+
+-   Updating a Medic:
+
+```gql
+mutation {
+    updateMedic(
+        id: "2458fc1a-590c-4e4f-a86b-6d78756bc2cc"
+        medicInput: { name: "AAAHarper Charlotte Brooks", address: "567 Willow Boulevard, Rosewood, GA 38374", phone: "(256) 555-8429", email: "h.charlotte.brooks@fakemail.com", medicalSpecialtyId: ["bc8d034d-7cdc-49d8-8bbb-09fbcb138c2f", "0e2e04b1-0fea-41f1-8515-7743401ca91f"] }
+    ) {
+        id
+        name
+    }
+}
+```
+
+-   Subscription to `MedicUpdated` event:
+
+Note that we are watching the following specific `medicId`. Any other Medic, with different id, won't be watched.
+
+```gql
+subscription {
+    medicUpdated(medicId: "2458fc1a-590c-4e4f-a86b-6d78756bc2cc") {
+        id
+        name
+        address
+        phone
+        email
+        medicalSpecialtyId
+    }
+}
+```
+
+-   Subscription response when the specified Medic is updated:
+
+```json
+{
+    "data": {
+        "medicUpdated": {
+            "id": "2458fc1a-590c-4e4f-a86b-6d78756bc2cc",
+            "name": "AAAHarper Charlotte Brooks",
+            "address": "567 Willow Boulevard, Rosewood, GA 38374",
+            "phone": "(256) 555-8429",
+            "email": "h.charlotte.brooks@fakemail.com",
+            "medicalSpecialtyId": ["bc8d034d-7cdc-49d8-8bbb-09fbcb138c2f", "0e2e04b1-0fea-41f1-8515-7743401ca91f"]
+        }
+    }
+}
+```
+
+</details>
 
 ## Caveats
 

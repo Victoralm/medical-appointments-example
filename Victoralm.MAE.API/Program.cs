@@ -1,6 +1,7 @@
 using Victoralm.MAE.API.Context;
 using Victoralm.MAE.API.GraphQL.Mutations;
 using Victoralm.MAE.API.GraphQL.Queries;
+using Victoralm.MAE.API.GraphQL.Subscriptions;
 using Victoralm.MAE.API.UoW.Implementations;
 using Victoralm.MAE.API.UoW.Interfaces;
 
@@ -27,6 +28,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddGraphQLServer().AddQueryType<Query>()
                                    .AddMutationType<Mutation>()
+                                   .AddSubscriptionType<Subscription>()
+                                   .AddInMemorySubscriptions() // For medium/small projects, use Redis for big projects
                                    .RegisterDbContext<PostgreContext>()
                                    .AddProjections()
                                    .AddFiltering()
@@ -46,6 +49,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseWebSockets();
 
 app.MapGraphQL("/graphql");
 

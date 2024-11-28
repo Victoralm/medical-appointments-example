@@ -1,5 +1,7 @@
-﻿using Victoralm.MAE.API.GraphQL.Mutations.Inputs;
+﻿using HotChocolate.Subscriptions;
+using Victoralm.MAE.API.GraphQL.Mutations.Inputs;
 using Victoralm.MAE.API.GraphQL.Mutations.Results;
+using Victoralm.MAE.API.GraphQL.Subscriptions;
 using Victoralm.MAE.API.Models;
 using Victoralm.MAE.API.UoW.Interfaces;
 
@@ -7,7 +9,7 @@ namespace Victoralm.MAE.API.GraphQL.Mutations;
 
 public partial class Mutation
 {
-    public async Task<MedicResult> AddMedic([Service] IUnitOfWork unitOfWork, MedicInput medicInput)
+    public async Task<MedicResult> AddMedic([Service] IUnitOfWork unitOfWork, [Service] ITopicEventSender topicEventSender, MedicInput medicInput)
     {
         var id = Guid.NewGuid();
         MedicResult medicResult = new MedicResult()
@@ -16,7 +18,8 @@ public partial class Mutation
             Name = medicInput.Name,
             Address = medicInput.Address,
             Phone = medicInput.Phone,
-            Email = medicInput.Email
+            Email = medicInput.Email,
+            MedicalSpecialtyId = medicInput.MedicalSpecialtyId
         };
 
         Medic medic = new Medic()
@@ -25,16 +28,20 @@ public partial class Mutation
             Name = medicResult.Name,
             Address = medicResult.Address,
             Phone = medicResult.Phone,
-            Email = medicResult.Email
+            Email = medicResult.Email,
+            MedicalSpecialtyId = medicResult.MedicalSpecialtyId
         };
 
         await unitOfWork.Medics.Add(medic);
         await unitOfWork.Medics.SaveAsync();
 
+        // Triggering the event
+        await topicEventSender.SendAsync(nameof(Subscription.MedicAdded), medicResult);
+
         return medicResult;
     }
 
-    public async Task<MedicResult> UpdateMedic([Service] IUnitOfWork unitOfWork, Guid id, MedicInput medicInput)
+    public async Task<MedicResult> UpdateMedic([Service] IUnitOfWork unitOfWork, [Service] ITopicEventSender topicEventSender, Guid id, MedicInput medicInput)
     {
         Medic medic = await unitOfWork.Medics.GetById(id);
 
@@ -57,6 +64,10 @@ public partial class Mutation
             Email = medic.Email,
             MedicalSpecialtyId = medic.MedicalSpecialtyId
         };
+
+        // Triggering the event
+        string updatedMedicTopic = $"{medicResult.Id}_{nameof(Subscription.MedicUpdated)}";
+        await topicEventSender.SendAsync(updatedMedicTopic, medicResult);
 
         return medicResult;
     }

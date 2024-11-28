@@ -34,7 +34,7 @@ public partial class Mutation
         return medicResult;
     }
 
-    public async Task<MedicResult> UpdateAppointment([Service] IUnitOfWork unitOfWork, Guid id, MedicInput medicInput)
+    public async Task<MedicResult> UpdateMedic([Service] IUnitOfWork unitOfWork, Guid id, MedicInput medicInput)
     {
         Medic medic = await unitOfWork.Medics.GetById(id);
 

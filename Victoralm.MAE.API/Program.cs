@@ -30,7 +30,7 @@ builder.Services.AddGraphQLServer().AddQueryType<Query>()
                                    .AddMutationType<Mutation>()
                                    .AddSubscriptionType<Subscription>()
                                    .AddInMemorySubscriptions() // For medium/small projects, use Redis for big projects
-                                   .RegisterDbContext<PostgreContext>()
+                                   //.RegisterDbContext<PostgreContext>()
                                    .AddProjections()
                                    .AddFiltering()
                                    .AddSorting();
